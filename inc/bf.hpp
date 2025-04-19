@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 enum INS : char
 {
@@ -11,6 +12,10 @@ enum INS : char
     ACCEPT_INPUT   = ',',
     COND_JMP_START = '[', // if byte at DP is 0, goto end
     COND_JMP_END   = ']'  // if byte at DP is !0, goto begin
+};
+
+inline constexpr std::string BF_EXTENSIONS[] = {
+    ".bf"
 };
 
 namespace bf::detail
