@@ -5,6 +5,17 @@
 #include <unordered_map>
 #include <vector>
 
+template <typename... Args> inline void Panic(const Args &...log_args)
+{
+    std::ostringstream oss;
+    oss << "PANIC: ";
+    (oss << ... << log_args);
+    throw std::runtime_error(oss.str());
+}
+
+namespace bf
+{
+inline constexpr const size_t MAX_STACK_SIZE = 30'000;
 enum INS : char
 {
     MOV_DP_RIGHT   = '>',
@@ -29,15 +40,7 @@ inline std::unordered_map<INS, const char *> g_INS_to_str = {
 
 inline constexpr std::string BF_EXTENSIONS[] = {".b", ".bf"};
 
-template <typename... Args> inline void Panic(const Args &...log_args)
-{
-    std::ostringstream oss;
-    oss << "PANIC: ";
-    (oss << ... << log_args);
-    throw std::runtime_error(oss.str());
-}
-
-namespace bf::detail
+namespace detail
 {
 /**
  * @return val
@@ -47,4 +50,5 @@ namespace bf::detail
 std::pair<bool, bool> parse_cmd_line(int &argc, char **&argv);
 std::vector<char> parse_bf_tokens(char **argv);
 void print_bf_tokens(std::vector<char> &tokens);
-} // namespace bf::detail
+} // namespace detail
+} // namespace bf

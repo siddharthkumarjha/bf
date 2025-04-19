@@ -26,10 +26,10 @@ int main(int argc, char *argv[])
         const auto ip_end   = tokens.end();
         const auto ip_begin = tokens.begin() - 1;
 
-        int8_t cells[30'000]         = {0};
-        int8_t *dp                   = cells;
-        const int8_t *const dp_begin = cells - 1;
-        const int8_t *const dp_end   = cells + 30'000;
+        int8_t cells[bf::MAX_STACK_SIZE] = {0};
+        int8_t *dp                       = cells;
+        const int8_t *const dp_begin     = cells - 1;
+        const int8_t *const dp_end       = cells + bf::MAX_STACK_SIZE;
 
         while (ip != ip_end)
         {
@@ -40,52 +40,52 @@ int main(int argc, char *argv[])
 
             if (debug_flag)
                 std::printf("[%ld] %d %s\n", (dp - (dp_begin + 1)), *dp,
-                            g_INS_to_str[static_cast<INS>(*ip)]);
+                            bf::g_INS_to_str.at(static_cast<bf::INS>(*ip)));
 
-            switch (static_cast<INS>(*ip))
+            switch (static_cast<bf::INS>(*ip))
             {
-            case MOV_DP_RIGHT:
+            case bf::MOV_DP_RIGHT:
             {
                 ++dp;
                 ++ip;
             }
             break;
-            case MOV_DP_LEFT:
+            case bf::MOV_DP_LEFT:
             {
                 --dp;
                 ++ip;
             }
             break;
-            case INC_BYTE:
+            case bf::INC_BYTE:
             {
                 *dp += 1;
                 ++ip;
             }
             break;
-            case DEC_BYTE:
+            case bf::DEC_BYTE:
             {
                 *dp -= 1;
                 ++ip;
             }
             break;
-            case OUT_BYTE:
+            case bf::OUT_BYTE:
             {
                 printf("%c", *dp);
                 ++ip;
             }
             break;
-            case ACCEPT_INPUT:
+            case bf::ACCEPT_INPUT:
             {
                 printf("\nWaiting for 1byte input:: ");
                 *dp = getchar();
                 ++ip;
             }
             break;
-            case COND_JMP_START:
+            case bf::COND_JMP_START:
             {
                 if (*dp == 0) // jmp to ins after end, exit loop
                 {
-                    while (ip != ip_end && *ip != COND_JMP_END)
+                    while (ip != ip_end && *ip != bf::COND_JMP_END)
                         ++ip;
                     if (ip == ip_end)
                         Panic("Matching ] not found");
@@ -94,11 +94,11 @@ int main(int argc, char *argv[])
                 ++ip;
             }
             break;
-            case COND_JMP_END:
+            case bf::COND_JMP_END:
             {
                 if (*dp != 0) // jmp to ins after start
                 {
-                    while (ip != ip_begin && *ip != COND_JMP_START)
+                    while (ip != ip_begin && *ip != bf::COND_JMP_START)
                         --ip;
                     if (ip == ip_begin)
                         Panic("Matching [ not found");

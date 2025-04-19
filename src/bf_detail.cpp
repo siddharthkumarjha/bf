@@ -53,7 +53,7 @@ static bool contains_bf_extension(const char *argv)
         return false;
     }
 
-    for (const std::string &valid_extension : BF_EXTENSIONS)
+    for (const std::string &valid_extension : bf::BF_EXTENSIONS)
     {
         if (valid_extension == this_file_extension)
             return true;
@@ -61,7 +61,7 @@ static bool contains_bf_extension(const char *argv)
 
     std::cerr << "file extension :: " << this_file_extension
               << " is not one of recognized extensions:: ";
-    for (const std::string &valid_extension : BF_EXTENSIONS)
+    for (const std::string &valid_extension : bf::BF_EXTENSIONS)
     {
         std::cerr << valid_extension << ' ';
     }
