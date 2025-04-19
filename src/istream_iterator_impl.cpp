@@ -7,8 +7,8 @@ static bool is_bf_comment(const char c)
 {
     switch (static_cast<INS>(c))
     {
-    case MOV_IP_RIGHT:
-    case MOV_IP_LEFT:
+    case MOV_DP_RIGHT:
+    case MOV_DP_LEFT:
     case INC_BYTE:
     case DEC_BYTE:
     case OUT_BYTE:

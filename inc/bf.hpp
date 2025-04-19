@@ -1,11 +1,14 @@
 #pragma once
-#include <vector>
+#include "sstream"
+#include <stdexcept>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 enum INS : char
 {
-    MOV_IP_RIGHT   = '>',
-    MOV_IP_LEFT    = '<',
+    MOV_DP_RIGHT   = '>',
+    MOV_DP_LEFT    = '<',
     INC_BYTE       = '+',
     DEC_BYTE       = '-',
     OUT_BYTE       = '.',
@@ -14,12 +17,34 @@ enum INS : char
     COND_JMP_END   = ']'  // if byte at DP is !0, goto begin
 };
 
-inline constexpr std::string BF_EXTENSIONS[] = {
-    ".bf"
-};
+inline std::unordered_map<INS, const char *> g_INS_to_str = {
+    {INS::MOV_DP_RIGHT, "MOV_DP_RIGHT"},
+    {INS::MOV_DP_LEFT, "MOV_DP_LEFT"},
+    {INS::INC_BYTE, "INC_BYTE"},
+    {INS::DEC_BYTE, "DEC_BYTE"},
+    {INS::OUT_BYTE, "OUT_BYTE"},
+    {INS::ACCEPT_INPUT, "ACCEPT_INPUT"},
+    {INS::COND_JMP_START, "COND_JMP_START"},
+    {INS::COND_JMP_END, "COND_JMP_END"}};
+
+inline constexpr std::string BF_EXTENSIONS[] = {".b", ".bf"};
+
+template <typename... Args> inline void Panic(const Args &...log_args)
+{
+    std::ostringstream oss;
+    oss << "PANIC: ";
+    (oss << ... << log_args);
+    throw std::runtime_error(oss.str());
+}
 
 namespace bf::detail
 {
-bool is_bf_file(int &argc, char **&argv);
+/**
+ * @return val
+ * @bool - debug_flag
+ * @bool - is_bf_file_flag
+ */
+std::pair<bool, bool> parse_cmd_line(int &argc, char **&argv);
 std::vector<char> parse_bf_tokens(char **argv);
-}
+void print_bf_tokens(std::vector<char> &tokens);
+} // namespace bf::detail
