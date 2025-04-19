@@ -1,7 +1,9 @@
 #include "istream_iterator_impl.hpp"
 #include "bf.hpp"
 
-bool is_bf_comment(const char c)
+using namespace bf;
+
+static bool is_bf_comment(const char c)
 {
     switch (static_cast<INS>(c))
     {

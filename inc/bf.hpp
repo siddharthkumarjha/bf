@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 enum INS : char
 {
@@ -11,3 +12,9 @@ enum INS : char
     COND_JMP_START = '[', // if byte at DP is 0, goto end
     COND_JMP_END   = ']'  // if byte at DP is !0, goto begin
 };
+
+namespace bf::detail
+{
+bool is_bf_file(int &argc, char **&argv);
+std::vector<char> parse_bf_tokens(char **argv);
+}

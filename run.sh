@@ -1,6 +1,8 @@
 #/bin/env bash
+SCRIPT_PATH="$(readlink -f "$0")"
+SCRIPT_DIR="$(dirname $SCRIPT_PATH)"
 
-HISTFILE=~/.run_args_history
+HISTFILE=$SCRIPT_DIR/build/.run_args_history
 HISTSIZE=1000
 HISTCONTROL=ignoredups
 history -r # load previous history

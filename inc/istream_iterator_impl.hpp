@@ -2,6 +2,8 @@
 #include <iterator>
 #include <fstream>
 
+namespace bf
+{
 typedef std::char_traits<char> traits_type;
 typedef std::basic_istream<char, traits_type> istream_type;
 
@@ -58,3 +60,4 @@ private:
         return !lLhsVal.equal(lRhsVal);
     }
 };
+}
