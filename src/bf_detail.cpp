@@ -11,7 +11,7 @@ namespace fs = std::filesystem;
         ++argv;                                                                \
     } while (false)
 
-static void panic_if_not_regular_file(const char *file)
+static void panic_if_not_regular_file(fs::path const &file)
 {
     if (not fs::exists(file))
     {
@@ -24,7 +24,7 @@ static void panic_if_not_regular_file(const char *file)
     }
 }
 
-static void panic_if_not_bf_ext(const char *file)
+static void panic_if_not_bf_ext(fs::path const &file)
 {
     const std::string this_file_extension = fs::path(file).extension().string();
     if (this_file_extension.empty())
@@ -42,7 +42,7 @@ static void panic_if_not_bf_ext(const char *file)
           "\n\t\tis not one of recognized extensions:: ", bf::BF_EXTENSIONS);
 }
 
-static void panic_if_not_bf_file_name(const char *file_name)
+static void panic_if_not_bf_file_name(fs::path file_name)
 {
     panic_if_not_regular_file(file_name);
     panic_if_not_bf_ext(file_name);
@@ -50,15 +50,15 @@ static void panic_if_not_bf_file_name(const char *file_name)
 
 std::pair<bool, std::string> bf::detail::parse_cmd_line(int &argc, char **&argv)
 {
-    const char *file_name = argv[0];
+    const char *prog_name = argv[0];
     SHIFT_ARGS(argc, argv);
 
     if (argc <= 0)
-        Panic("Size of input is small\nExpected ", file_name,
+        Panic("Size of input is small\nExpected ", prog_name,
               " [--debug] <file_name.bf>\n");
 
     if (argc > 2)
-        Panic("Too many args passed\nExpected ", file_name,
+        Panic("Too many args passed\nExpected ", prog_name,
               " [--debug] <file_name.bf>\n");
 
     bool debug_flag = false;

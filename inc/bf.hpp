@@ -30,7 +30,7 @@ template <typename... Args> inline void panic_impl(const Args &...log_args)
     std::ostringstream oss;
     oss << "PANIC: ";
     (oss << ... << log_args);
-    oss << std::endl;
+    oss << '\n';
     throw std::runtime_error(oss.str());
 }
 

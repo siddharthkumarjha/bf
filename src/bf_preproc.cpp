@@ -1,5 +1,4 @@
 #include "bf.hpp"
-#include "defer.hpp"
 #include "fstream"
 #include "iostream"
 #include <stack>
@@ -10,7 +9,6 @@ std::vector<bf::ops> bf::preproc::parse_bf_tokens(const std::string &file_name)
         Panic("No input file found");
 
     std::ifstream bf_file(file_name);
-    defer { bf_file.close(); };
 
     std::vector<bf::ops> collected_ops;
     std::stack<size_t> track_jmp_ins;
@@ -71,10 +69,10 @@ std::vector<bf::ops> bf::preproc::parse_bf_tokens(const std::string &file_name)
 
 void bf::preproc::print_bf_tokens(std::vector<ops> &tokens)
 {
-    std::cout << "*** printing tokens ***" << std::endl;
+    std::cout << "*** printing tokens ***" << '\n';
     for (const auto c : tokens)
     {
         std::cout << "[" << g_INS_to_str.at(c.op) << " " << c.operand << "]\n";
     }
-    std::cout << std::endl;
+    std::cout << std::flush;
 }

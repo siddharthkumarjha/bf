@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
     }
     catch (std::exception const &excuse)
     {
-        std::cerr << excuse.what() << std::endl;
-        std::cerr << "exiting..." << std::endl;
+        std::cerr << excuse.what() << '\n' << std::flush;
+        std::cerr << "exiting..." << '\n' << std::flush;
 
         return 1;
     }
