@@ -44,7 +44,6 @@ void bf::interpretor::interpret(std::vector<bf::ops> const &tokens,
             std::printf("[%ld]\t%d\t%s\n", (dp - (dp_begin + 1)), *dp,
                         bf::g_INS_to_str.at(ip->op));
 
-        // todo; fix loops; make an AST
         switch (ip->op)
         {
         case bf::MOV_DP_RIGHT:

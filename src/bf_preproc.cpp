@@ -4,24 +4,6 @@
 #include "iostream"
 #include <stack>
 
-bool is_bf_comment(char const c)
-{
-    switch (c)
-    {
-    case bf::MOV_DP_RIGHT:
-    case bf::MOV_DP_LEFT:
-    case bf::INC_BYTE:
-    case bf::DEC_BYTE:
-    case bf::OUT_BYTE:
-    case bf::ACCEPT_INPUT:
-    case bf::COND_JMP_START:
-    case bf::COND_JMP_END:
-        return false;
-    default:
-        return true;
-    }
-}
-
 std::vector<bf::ops> bf::preproc::parse_bf_tokens(const std::string &file_name)
 {
     if (file_name.empty())
