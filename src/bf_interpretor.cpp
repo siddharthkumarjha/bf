@@ -1,7 +1,12 @@
 #include "bf.hpp"
 
-void bf::interpretor::interpret(std::vector<bf::ops> const &tokens, bool debug_flag)
+void bf::interpretor::interpret(std::vector<bf::ops> const &tokens,
+                                bool debug_flag)
 {
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+
     auto ip             = tokens.cbegin();
     const auto ip_end   = tokens.cend();
     const auto ip_begin = tokens.cbegin() - 1;
@@ -10,6 +15,8 @@ void bf::interpretor::interpret(std::vector<bf::ops> const &tokens, bool debug_f
     int8_t *dp                       = cells;
     const int8_t *const dp_begin     = cells - 1;
     const int8_t *const dp_end       = cells + bf::MAX_STACK_SIZE;
+
+#pragma GCC diagnostic pop
 
     if (debug_flag)
     {
