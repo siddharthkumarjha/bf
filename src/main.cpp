@@ -4,23 +4,15 @@
 #include <cstring>
 #include <iostream>
 
-constexpr auto max(auto x, auto y) { return (x < y) ? y : x; }
-constexpr auto min(auto x, auto y) { return (x < y) ? x : y; }
-
 int main(int argc, char *argv[])
 {
     try
     {
-        auto [debug_flag, is_bf_file_flag] =
-            bf::detail::parse_cmd_line(argc, argv);
-        if (not is_bf_file_flag)
-        {
-            Panic("bf file not found");
-        }
+        auto [debug_flag, bf_file_name] = bf::parse_cmd_line(argc, argv);
 
-        std::vector<char> tokens = bf::detail::parse_bf_tokens(argv);
+        std::vector<char> tokens = bf::parse_bf_tokens(bf_file_name);
         if (debug_flag)
-            bf::detail::print_bf_tokens(tokens);
+            bf::print_bf_tokens(tokens);
 
         auto ip             = tokens.begin();
         const auto ip_end   = tokens.end();
@@ -42,6 +34,7 @@ int main(int argc, char *argv[])
                 std::printf("[%ld] %d %s\n", (dp - (dp_begin + 1)), *dp,
                             bf::g_INS_to_str.at(static_cast<bf::INS>(*ip)));
 
+            // todo; fix loops; make an AST
             switch (static_cast<bf::INS>(*ip))
             {
             case bf::MOV_DP_RIGHT:

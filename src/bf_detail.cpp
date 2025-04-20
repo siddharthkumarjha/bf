@@ -1,9 +1,6 @@
 #include "bf.hpp"
-#include "defer.hpp"
-#include "istream_iterator_impl.hpp"
 #include <cstring>
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 
 namespace fs = std::filesystem;
@@ -15,133 +12,78 @@ namespace fs = std::filesystem;
         ++argv;                                                                \
     } while (false)
 
-static bool is_input_ok(int argc, char **argv)
-{
-    if (argc <= 1)
-    {
-        std::cout << "wrong input size" << std::endl;
-        std::cout << "expected " << argv[0] << " [--debug] <file_name.bf>"
-                  << std::endl;
-        return false;
-    }
-    return true;
-}
-
-static bool check_regular_file(const char *file)
+static void panic_if_not_regular_file(const char *file)
 {
     if (not fs::exists(file))
     {
-        std::cerr << "given file:: " << file << " does not exist" << std::endl;
-        return false;
+        Panic("given file:: ", file, " does not exist");
     }
 
     if (not fs::is_regular_file(file))
     {
-        std::cerr << "given file:: " << file << " is not a regular file"
-                  << std::endl;
-        return false;
+        Panic("given file:: ", file, " is not a regular file");
     }
-    return true;
 }
 
-static bool contains_bf_extension(const char *argv)
+static void panic_if_not_bf_ext(const char *file)
 {
-    const std::string this_file_extension = fs::path(argv).extension().string();
+    const std::string this_file_extension = fs::path(file).extension().string();
     if (this_file_extension.empty())
     {
-        std::cerr << "no file extension provided" << std::endl;
-        return false;
+        Panic("no file extension provided");
     }
 
     for (const std::string &valid_extension : bf::BF_EXTENSIONS)
     {
         if (valid_extension == this_file_extension)
-            return true;
+            return;
     }
 
-    std::cerr << "file extension :: " << this_file_extension
-              << " is not one of recognized extensions:: ";
-    for (const std::string &valid_extension : bf::BF_EXTENSIONS)
-    {
-        std::cerr << valid_extension << ' ';
-    }
-    std::cerr << std::endl;
-
-    return false;
+    Panic("file extension:: ", this_file_extension,
+          "\n\t\tis not one of recognized extensions:: ", bf::BF_EXTENSIONS);
 }
 
-static bool is_bf_file(int &argc, char **&argv)
+static void panic_if_not_bf_file_name(const char *file_name)
 {
-    if (not is_input_ok(argc, argv))
-        return false;
+    panic_if_not_regular_file(file_name);
+    panic_if_not_bf_ext(file_name);
+}
 
+std::pair<bool, std::string> bf::detail::parse_cmd_line(int &argc, char **&argv)
+{
+    const char *file_name = argv[0];
     SHIFT_ARGS(argc, argv);
 
-    if (not check_regular_file(argv[0]))
-        return false;
-
-    if (not contains_bf_extension(argv[0]))
-        return false;
-
-    return true;
-}
-
-static bool is_debug_flag_on(int &argc, char **&argv)
-{
-    bool debug_flag = false;
-    if (argc <= 1)
-    {
-        Panic("wrong input size\n", "expected ", argv[0],
+    if (argc <= 0)
+        Panic("Size of input is small\nExpected ", file_name,
               " [--debug] <file_name.bf>\n");
-    }
 
-    if (argv[1][0] == '-' && argv[1][1] == '-')
+    if (argc > 2)
+        Panic("Too many args passed\nExpected ", file_name,
+              " [--debug] <file_name.bf>\n");
+
+    bool debug_flag = false;
+    std::string bf_file_name;
+
+    while (argc > 0)
     {
-        const size_t n = strlen(argv[1] + 2);
-        const size_t m = strlen("debug");
-        if ((n == m) && strcmp(argv[1] + 2, "debug") == 0)
+        if (strncmp(argv[0], "--", 2) == 0)
         {
-            debug_flag = true;
+            if (strcmp(argv[0], "--debug") == 0)
+                debug_flag = true;
+            else
+                Panic("Unknown flag passed. Only [--debug] expected");
         }
         else
         {
-            Panic("unknown flags passed\nExpected ", argv[0],
-                  " [--debug] <file_name.bf>\n");
+            panic_if_not_bf_file_name(argv[0]);
+            if (bf_file_name.empty())
+                bf_file_name = argv[0];
+            else
+                Panic("Too many bf source files given only 1 expected");
         }
-
-        --argc;
-        if (argc <= 1)
-        {
-            Panic("Size of input is small\nExpected ", argv[0],
-                  " [--debug] <file_name.bf>\n");
-        }
-
-        argv[1] = argv[2];
+        SHIFT_ARGS(argc, argv);
     }
-    return debug_flag;
-}
 
-std::pair<bool, bool> bf::detail::parse_cmd_line(int &argc, char **&argv)
-{
-    const bool debug_flag      = is_debug_flag_on(argc, argv);
-    const bool is_bf_file_flag = is_bf_file(argc, argv);
-
-    return {debug_flag, is_bf_file_flag};
-}
-
-std::vector<char> bf::detail::parse_bf_tokens(char **argv)
-{
-    std::ifstream bf_file(argv[0]);
-    defer { bf_file.close(); };
-    return {bf::istream_iterator(bf_file), bf::istream_iterator()};
-}
-
-void bf::detail::print_bf_tokens(std::vector<char> &tokens)
-{
-    std::cout << "*** printing tokens ***" << std::endl;
-    for (const auto c : tokens)
-    {
-        std::cout << c;
-    }
-    std::cout << '\n' << std::endl;
+    return {debug_flag, bf_file_name};
 }
