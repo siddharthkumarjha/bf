@@ -23,15 +23,22 @@ int main(int argc, char *argv[])
         const int8_t *const dp_begin     = cells - 1;
         const int8_t *const dp_end       = cells + bf::MAX_STACK_SIZE;
 
+        if (debug_flag)
+        {
+            std::printf("\n-------------------------------\n");
+            std::printf("off\t*dp\tINS\n");
+            std::printf("-------------------------------\n");
+        }
+
         while (ip != ip_end)
         {
             if (dp <= dp_begin)
-                Panic("stack underflow dp offset:: ", (dp_begin - dp) - 1);
+                Panic("stack underflow dp offset:: ", dp - (dp_begin + 1));
             else if (dp >= dp_end)
-                Panic("stack overflow dp offset:: ", (dp - dp_end) + 1);
+                Panic("stack overflow dp offset:: ", (dp_end - 1) - dp);
 
             if (debug_flag)
-                std::printf("[%ld] %d %s\n", (dp - (dp_begin + 1)), *dp,
+                std::printf("[%ld]\t%d\t%s\n", (dp - (dp_begin + 1)), *dp,
                             bf::g_INS_to_str.at(static_cast<bf::INS>(*ip)));
 
             // todo; fix loops; make an AST
