@@ -54,6 +54,12 @@ namespace bf
         COND_JMP_END   = ']'  // if byte at DP is !0, goto begin
     };
 
+    struct ops
+    {
+        INS op;
+        size_t operand;
+    };
+
     inline std::unordered_map<INS, const char *> g_INS_to_str = {
         {INS::MOV_DP_RIGHT, "MOV_DP_RIGHT"},
         {INS::MOV_DP_LEFT, "MOV_DP_LEFT"},
@@ -78,7 +84,12 @@ namespace bf
 
     inline namespace preproc
     {
-        std::vector<char> parse_bf_tokens(const std::string &);
-        void print_bf_tokens(std::vector<char> &tokens);
+        std::vector<ops> parse_bf_tokens(const std::string &);
+        void print_bf_tokens(std::vector<ops> &tokens);
     } // namespace preproc
+
+    inline namespace interpretor
+    {
+        void interpret(std::vector<bf::ops> const &tokens, bool debug_flag);
+    }
 } // namespace bf
