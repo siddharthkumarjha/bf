@@ -1,7 +1,6 @@
 #include "bf.hpp"
 #include <cstring>
 #include <filesystem>
-#include <iostream>
 
 namespace fs = std::filesystem;
 

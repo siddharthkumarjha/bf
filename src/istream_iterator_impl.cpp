@@ -21,49 +21,49 @@ static bool is_bf_comment(const char c)
     }
 }
 
-istream_type &operator>>(istream_type &lInputStrm, char &lStoreChar)
+istream_type &operator>>(istream_type &input_strm, char &store_char)
 {
     typedef typename istream_type::int_type int_type;
-    typename istream_type::sentry lSentryObj(lInputStrm, false);
+    typename istream_type::sentry sentry_obj(input_strm, false);
 
-    if (lSentryObj)
+    if (sentry_obj)
     {
-        std::ios_base::iostate lStrmErr = std::ios_base::goodbit;
+        std::ios_base::iostate strm_err = std::ios_base::goodbit;
         try
         {
-            int_type lCharRead;
+            int_type char_read;
             do
             {
-                lCharRead = lInputStrm.rdbuf()->sbumpc();
+                char_read = input_strm.rdbuf()->sbumpc();
             } while (
-                !traits_type::eq_int_type(lCharRead, traits_type::eof()) and
-                is_bf_comment(traits_type::to_char_type(lCharRead)));
+                !traits_type::eq_int_type(char_read, traits_type::eof()) and
+                is_bf_comment(traits_type::to_char_type(char_read)));
 
-            if (!traits_type::eq_int_type(lCharRead, traits_type::eof()))
-                lStoreChar = traits_type::to_char_type(lCharRead);
+            if (!traits_type::eq_int_type(char_read, traits_type::eof()))
+                store_char = traits_type::to_char_type(char_read);
             else
-                lStrmErr |= (std::ios_base::eofbit | std::ios_base::failbit);
+                strm_err |= (std::ios_base::eofbit | std::ios_base::failbit);
         }
         catch (...)
         {
-            lInputStrm.setstate(std::ios_base::badbit);
+            input_strm.setstate(std::ios_base::badbit);
         }
-        if (lStrmErr)
-            lInputStrm.setstate(lStrmErr);
+        if (strm_err)
+            input_strm.setstate(strm_err);
     }
-    return lInputStrm;
+    return input_strm;
 }
 
 ///  Construct start of input stream iterator.
-istream_iterator::istream_iterator(istream_type &lIstrmStart)
-    : m_stream(std::addressof(lIstrmStart))
+istream_iterator::istream_iterator(istream_type &istrm_start)
+    : _stream(std::addressof(istrm_start))
 {
     read();
 }
 
 istream_iterator::const_reference istream_iterator::operator*() const
 {
-    return m_value;
+    return _value;
 }
 istream_iterator::const_pointer istream_iterator::operator->() const
 {
@@ -78,20 +78,20 @@ istream_iterator &istream_iterator::operator++()
 
 istream_iterator istream_iterator::operator++(int)
 {
-    istream_iterator lTmp = *this;
+    istream_iterator tmp = *this;
     read();
-    return lTmp;
+    return tmp;
 }
 
-bool istream_iterator::equal(const istream_iterator &lOtherObj) const
+bool istream_iterator::equal(const istream_iterator &other_istream_iterator) const
 {
-    return !m_stream || (m_stream == lOtherObj.m_stream);
+    return !_stream || (_stream == other_istream_iterator._stream);
 }
 
 void istream_iterator::read()
 {
-    if (m_stream && !(*m_stream >> m_value))
+    if (_stream && !(*_stream >> _value))
     {
-        m_stream = 0;
+        _stream = 0;
     }
 }
