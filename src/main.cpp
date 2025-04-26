@@ -7,14 +7,16 @@ int main(int argc, char *argv[])
 {
     try
     {
-        auto [debug_flag, bf_file_name] = bf::parse_cmd_line(argc, argv);
+        auto opts = bf::parse_cmd_line(argc, argv);
 
-        std::vector<bf::ops> tokens = bf::parse_bf_tokens(bf_file_name);
+        std::vector<bf::ops> tokens = bf::parse_tokens(opts.file_name);
 
-        if (debug_flag)
-            bf::print_bf_tokens(tokens);
+        if (opts[bf::DEBUG_FLAG])
+            bf::print_tokens(tokens);
 
-        bf::interpret(tokens, debug_flag);
+        if (opts[bf::INTERPRET_FLAG])
+            bf::interpret(tokens, opts[bf::DEBUG_FLAG]);
+
     }
     catch (std::exception const &excuse)
     {

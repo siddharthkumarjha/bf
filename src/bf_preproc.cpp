@@ -3,12 +3,12 @@
 #include "iostream"
 #include <stack>
 
-std::vector<bf::ops> bf::preproc::parse_bf_tokens(const std::string &file_name)
+std::vector<bf::ops> bf::preproc::parse_tokens(const std::string_view file_name)
 {
     if (file_name.empty())
         Panic("No input file found");
 
-    std::ifstream bf_file(file_name);
+    std::ifstream bf_file(file_name.begin());
 
     std::vector<bf::ops> collected_ops;
     std::stack<size_t> track_jmp_ins;
@@ -67,7 +67,7 @@ std::vector<bf::ops> bf::preproc::parse_bf_tokens(const std::string &file_name)
     return collected_ops;
 }
 
-void bf::preproc::print_bf_tokens(std::vector<ops> &tokens)
+void bf::preproc::print_tokens(std::vector<ops> &tokens)
 {
     std::cout << "*** printing tokens ***" << '\n';
     for (const auto c : tokens)
