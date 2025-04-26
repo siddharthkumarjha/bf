@@ -74,6 +74,10 @@ namespace bf
         void print_tokens(std::vector<ops> &tokens);
     } // namespace preproc
 
+    inline namespace compiler
+    {
+        void compile(std::vector<bf::ops> const &tokens, bool debug_flag);
+    }
     inline namespace interpretor
     {
         void interpret(std::vector<bf::ops> const &tokens, bool debug_flag);

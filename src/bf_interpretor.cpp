@@ -1,4 +1,5 @@
 #include "bf.hpp"
+#include <cstdio>
 
 void bf::interpretor::interpret(std::vector<bf::ops> const &tokens,
                                 bool debug_flag)
@@ -73,7 +74,7 @@ void bf::interpretor::interpret(std::vector<bf::ops> const &tokens,
         case bf::OUT_BYTE:
         {
             for (size_t i = 0; i < ip->operand; ++i)
-                printf("%c", *dp);
+                putchar(*dp);
             ++ip;
         }
         break;
@@ -82,6 +83,19 @@ void bf::interpretor::interpret(std::vector<bf::ops> const &tokens,
             printf("\ninput> ");
             for (size_t i = 0; i < ip->operand; ++i)
                 *dp = getchar();
+
+            int ch = getc(stdin);
+            if (ch == '\r')
+            {
+                int next = getc(stdin);
+                if (next != '\n')
+                    ungetc(next, stdin);
+            }
+            else if (ch == '\n')
+                ;
+            else
+                ungetc(ch, stdin);
+
             ++ip;
         }
         break;
